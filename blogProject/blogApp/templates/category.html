@@ -1,0 +1,62 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <title>Av</title>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="{% url 'home' %}">Av Blogs</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav ml-auto">
+      
+        {% if request.user.is_authenticated %}
+        <li class="nav-item active">
+        <a class="nav-link" style="color: white;" href = "{% url 'profile' request.user.id %}" >{{request.user}}</a>
+        </li>
+        <li class="nav-item active">
+        <a class="nav-link" style="color: white;" href = "{% url 'logout' %}" >Logout</a>
+        </li>
+        {% else %}
+        
+        <a class="nav-link" href="{% url 'login' %}">Login</a>
+        {% endif %}
+       
+    </ul>
+  </div>
+</nav>
+     <h1> {{category.name}}</h1>
+
+ <!-- your_template.html -->  
+        {% for blog in blogs  %}
+        <div class="container mt-4">
+          <div class="row">
+            <div class="col-md-8">
+              <h2>{{blog.title}}</h2>
+              <p>{{blog.created_time}}</p>
+              <p>{{blog.author}}</p>
+              <p>{{blog.content}}</p>
+              <a href="{% url 'login' %}" class="btn btn-primary">Show more</a>
+              <a href="{% url 'login' %}" class="btn btn-primary">Update</a>
+              <a href="{% url 'login' %}" class="btn btn-danger">Delete</a>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+  
+   
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+</body>
+</html>
+

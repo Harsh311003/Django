@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <title>Rating Feature</title>
+</head>
+<body>
+
+<div class="container mt-5">
+  <h2>Rate This</h2>
+  <div id="star-rating" class="d-flex">
+    <!-- Display stars here -->
+  </div>
+  <p id="rating-value">Rating: 0</p>
+  <button id="submit-rating" class="btn btn-primary">Submit Rating</button>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+<script>
+$(document).ready(function() {
+  // Initial rating value
+  let rating = 0;
+
+  // Generate stars dynamically
+  for (let i = 1; i <= 5; i++) {
+    $('#star-rating').append(`<span class="star" data-value="${i}">&#9733;</span>`);
+  }
+
+  // Highlight stars on hover
+  $('.star').on('mouseover', function() {
+    let value = $(this).data('value');
+    highlightStars(value);
+  });
+
+  // Reset stars on mouseout
+  $('#star-rating').on('mouseout', function() {
+    highlightStars(rating);
+  });
+
+  // Set rating value on click
+  $('.star').on('click', function() {
+    rating = $(this).data('value');
+    $('#rating-value').text(`Rating: ${rating}`);
+  });
+
+  // Submit rating via Ajax
+  $('#submit-rating').on('click', function() {
+    // Here, you would replace the URL with the actual API endpoint
+    const apiUrl = '/rate/';
+    
+    // Example Ajax call
+    $.ajax({
+      type: 'POST',
+      url: apiUrl,
+      data: { rating: rating, csrfmiddlewaretoken: '{{ csrf_token }}' },
+      success: function(response) {
+        // Handle success
+        console.log('Rating submitted successfully:', response);
+      },
+      error: function(error) {
+        // Handle error
+        console.error('Error submitting rating:', error);
+      }
+    });
+  });
+
+  // Function to highlight stars up to the specified value
+  function highlightStars(value) {
+    $('.star').css('color', 'black'); // Reset all stars to default color
+    $('.star').each(function() {
+      if ($(this).data('value') <= value) {
+        $(this).css('color', 'gold'); // Highlight stars up to the specified value
+      }
+    });
+  }
+});
+</script>
+
+</body>
+</html>
