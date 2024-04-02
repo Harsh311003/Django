@@ -1,0 +1,122 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <title>Av</title>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="{% url 'home' %}">Av Blogs</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav ml-auto">
+      
+        {% if request.user.is_authenticated %}
+        <li class="nav-item active">
+        <a class="nav-link" style="color: white;" href = "{% url 'profile' request.user.id %}" >{{request.user}}</a>
+        </li>
+        <li class="nav-item active">
+        <a class="nav-link" style="color: white;" href = "{% url 'logout' %}" >Logout</a>
+        </li>
+        {% else %}
+        
+        <a class="nav-link" href="{% url 'login' %}">Login</a>
+        {% endif %}
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Categories
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                {% for category in categories %}
+                  <a class="dropdown-item" href="{% url 'category' category.id %}">{{ category.name }}</a>
+                {% endfor %}
+              </div>
+            </li>
+          </ul>
+        </div>
+    </ul>
+  </div>
+</nav>
+
+
+ <!-- your_template.html -->
+
+    
+ 
+        {% for blog in pending_blogs  %}
+        <div class="container mt-4">
+          <div class="row">
+            <div class="col-md-8">
+              <h2>{{blog.title}}</h2>
+              <p>{{blog.created_time}}</p>
+              <a href="{% url 'profile' blog.author.id %}?next={{ '/createBlog/' }}"> <p>{{blog.author}}</p></a>
+              <p>{{blog.content}}</p>
+              <a href="{% url 'login' %}" class="btn btn-primary">Show more</a>
+              <a href="{% url 'update_blog' blog.id %}" class="btn btn-primary">Update</a>
+              <button onclick="deleteBlog({{ blog.id }})" class="btn btn-primary">Delete Blog</button>
+              <button onclick="publishBlog({{ blog.id }})" class="btn btn-primary">publish Blog</button>
+
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+ 
+   
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+
+<!-- Your other script tags -->
+
+<script>
+    function deleteBlog(blogId) {
+        $.ajax({
+            type: 'POST',
+            url: '/blog/' + blogId + '/delete/',
+            data: {csrfmiddlewaretoken: '{{ csrf_token }}'},  // Include CSRF token
+            success: function (response) {
+                console.log(response);
+                // Handle success (e.g., show a message, update UI)
+                if (response.message === 'Blog deleted successfully') {
+            // Redirect to the profile page
+            
+            location.reload();
+          }
+            },
+            error: function (error) {
+                console.error('Error:', error);
+            }
+        });
+      }
+      function publishBlog(blogId) {
+        $.ajax({
+            type: 'POST',
+            url: '/blog/' + blogId + '/publish/',
+            data: {csrfmiddlewaretoken: '{{ csrf_token }}'},  // Include CSRF token
+            success: function (response) {
+                console.log(response);
+                // Handle success (e.g., show a message, update UI)
+                if (response.message === 'Blog published successfully') {
+            // Redirect to the profile page
+            location.reload();
+          }
+            },
+            error: function (error) {
+                console.error('Error:', error);
+            }
+        });
+      }
+</script>
+</body>
+</html>
+
